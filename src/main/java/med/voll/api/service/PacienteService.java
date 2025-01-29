@@ -2,6 +2,7 @@ package med.voll.api.service;
 
 import med.voll.api.dto.paciente.PacienteAtualizacaoDTO;
 import med.voll.api.dto.paciente.PacienteCadastroDTO;
+import med.voll.api.dto.paciente.PacienteDetalhadoDTO;
 import med.voll.api.dto.paciente.PacienteListagemDTO;
 import med.voll.api.model.Paciente;
 import med.voll.api.repository.PacienteRepository;
@@ -23,8 +24,8 @@ public class PacienteService {
         return new Paciente(pacienteCadastroDTO);
     }
 
-    public void cadastrarPaciente(PacienteCadastroDTO pacienteCadastroDTO){
-        pacienteRepository.save(convercaoParaPaciete(pacienteCadastroDTO));
+    public Paciente cadastrarPaciente(PacienteCadastroDTO pacienteCadastroDTO){
+        return pacienteRepository.save(convercaoParaPaciete(pacienteCadastroDTO));
     }
 
     public Page<PacienteListagemDTO> listarTodosOsPacientes(Pageable paginacao) {
@@ -32,13 +33,20 @@ public class PacienteService {
         return pacientesPage.map(PacienteListagemDTO::new);
     }
 
-    public void autualizarPaciente(PacienteAtualizacaoDTO dadosAtualizados) {
+    public PacienteDetalhadoDTO autualizarPaciente(PacienteAtualizacaoDTO dadosAtualizados) {
         Paciente paciente = pacienteRepository.getReferenceById(dadosAtualizados.id());
         paciente.atualizarInformacoes(dadosAtualizados);
+        return new PacienteDetalhadoDTO(paciente);
     }
 
     public void excluirPaciente(Long id) {
         Paciente paciente = pacienteRepository.getReferenceById(id);
         paciente.excluirPaciente(id);
+    }
+
+    public PacienteDetalhadoDTO detalharPaciente(Long id) {
+        Paciente  paciente = pacienteRepository.getReferenceById(id);
+        return new PacienteDetalhadoDTO(paciente);
+
     }
 }

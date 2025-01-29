@@ -2,6 +2,7 @@ package med.voll.api.service;
 
 import med.voll.api.dto.medico.MedicoAtualizacaoDTO;
 import med.voll.api.dto.medico.MedicoCadastroDTO;
+import med.voll.api.dto.medico.MedicoDetalhadoDTO;
 import med.voll.api.dto.medico.MedicoListagemDTO;
 import med.voll.api.model.Medico;
 import med.voll.api.repository.MedicoRepository;
@@ -20,27 +21,29 @@ public class MedicoService {
         this.medicoRepository = medicoRepository;
     }
 
-    private Medico convercaoParaMedico(MedicoCadastroDTO medicoCadastroDTO){
-        return new Medico(medicoCadastroDTO);
-    }
 
-
-
-    public void cadastrarMedico(MedicoCadastroDTO dado) {
-        medicoRepository.save(convercaoParaMedico(dado));
+    public Medico cadastrarMedico(MedicoCadastroDTO dado) {
+        Medico medico = new Medico(dado);
+        medicoRepository.save(medico);
+        return medico;
     }
 
     public Page<MedicoListagemDTO> listarTodosOsMedicos(Pageable paginacao) {
         return medicoRepository.findAllByAtivoTrue(paginacao).map(MedicoListagemDTO::new);
     }
 
-    public void autualizarMedico(MedicoAtualizacaoDTO dados) {
+    public Medico autualizarMedico(MedicoAtualizacaoDTO dados) {
         Medico medico = medicoRepository.getReferenceById(dados.id());
-        medico.atualizarInformacoes(dados);
+         medico.atualizarInformacoes(dados);
+         return medico;
     }
 
     public void excluirMedico(Long id) {
         Medico medico = medicoRepository.getReferenceById(id);
         medico.excluir();
+    }
+
+    public Medico detalharMedico(Long id) {
+        return medicoRepository.getReferenceById(id);
     }
 }

@@ -3,6 +3,7 @@ package med.voll.api.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.dto.paciente.PacienteAtualizacaoDTO;
@@ -13,6 +14,7 @@ import med.voll.api.dto.paciente.PacienteCadastroDTO;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of ="id")
 public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
