@@ -1,8 +1,9 @@
-package med.voll.api.model.usuario;
+package med.voll.api.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(of ="id")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
