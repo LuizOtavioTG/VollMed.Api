@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import med.voll.api.dto.AutenticacaoDTO;
 import med.voll.api.dto.TokenJWTDTO;
 import med.voll.api.model.Usuario;
-import med.voll.api.service.TokenService;
+import med.voll.api.service.TokenJWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AutenticacaoController {
 
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private TokenService tokenService;
+    private final TokenJWTService tokenJWTService;
     @Autowired
-    public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AutenticacaoController(AuthenticationManager authenticationManager, TokenJWTService tokenJWTService) {
         this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
+        this.tokenJWTService = tokenJWTService;
     }
 
     @PostMapping
     public ResponseEntity<TokenJWTDTO> efetuarLogin(@RequestBody @Valid AutenticacaoDTO autenticacaoDTO){
         var authenticationToken = new UsernamePasswordAuthenticationToken(autenticacaoDTO.login(), autenticacaoDTO.senha());
         var authentication = authenticationManager.authenticate(authenticationToken);
-        var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+        var tokenJWT = tokenJWTService.gerarToken((Usuario) authentication.getPrincipal());
         return ResponseEntity.ok(new TokenJWTDTO (tokenJWT));
     }
 
