@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import med.voll.api.dto.paciente.PacienteAtualizacaoDTO;
 import med.voll.api.dto.paciente.PacienteCadastroDTO;
 
+import java.util.List;
+
 @Entity(name = "Paciente")
 @Table(name = "pacientes")
 @Getter
@@ -26,6 +28,9 @@ public class Paciente {
     @Embedded
     private Endereco endereco;
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "paciente")
+    private List<Consulta> consultas;
 
     public Paciente(PacienteCadastroDTO pacienteCadastroDTO) {
         this.ativo = true;

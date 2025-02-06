@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import med.voll.api.dto.medico.MedicoAtualizacaoDTO;
 import med.voll.api.dto.medico.MedicoCadastroDTO;
 
+import java.util.List;
+
 @Entity(name = "Medico")
 @Table(name = "medicos")
 @Getter
@@ -31,6 +33,9 @@ public class Medico {
 
     @Embedded
     private Endereco endereco;
+
+    @OneToMany(mappedBy = "medico")
+    private List<Consulta> consultas;
 
     public Medico(MedicoCadastroDTO medicoCadastroDTO) {
         this.ativo = true;
