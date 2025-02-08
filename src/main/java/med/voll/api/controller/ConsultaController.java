@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/consultas")
 public class ConsultaController {
 
-    private  ConsultaService consultaService;
+    private final ConsultaService consultaService;
     @Autowired
     public ConsultaController(ConsultaService consultaService) {
         this.consultaService = consultaService;
@@ -26,8 +26,8 @@ public class ConsultaController {
     @PostMapping
     @Transactional
     public ResponseEntity<ConsultaDetalhamentoDTO> agendarConsulta(@RequestBody @Valid ConsultaAgendamentoDTO consultaAgendamentoDTO){
-        System.out.println(consultaAgendamentoDTO);
-        consultaService.agendar(consultaAgendamentoDTO);
-        return ResponseEntity.ok(new ConsultaDetalhamentoDTO(null, null, null, null));
+
+        var consultaDetalhamentoDTO = consultaService.agendar(consultaAgendamentoDTO);
+        return ResponseEntity.ok(consultaDetalhamentoDTO);
     }
 }

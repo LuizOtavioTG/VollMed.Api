@@ -27,12 +27,18 @@ public class TratadorDeErros {
                 .map(ErroValidacao::new)
                 .toList());
     }
+    @ExceptionHandler(ValidacaoException.class)
+    public  ResponseEntity<String> tratarErroRegraDeNegocio (ValidacaoException exception){
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErroAutenticacao> tratarBadCredentials(BadCredentialsException exception) {
         var erro = new ErroAutenticacao("Credenciais inválidas", exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroAutenticacao> tratarErroGenerico(Exception exception) {
