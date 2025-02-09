@@ -1,6 +1,7 @@
 package med.voll.api.service;
 
 import med.voll.api.dto.consulta.ConsultaAgendamentoDTO;
+import med.voll.api.dto.consulta.ConsultaCancelamentoDTO;
 import med.voll.api.dto.consulta.ConsultaDetalhamentoDTO;
 import med.voll.api.infra.exception.ValidacaoException;
 import med.voll.api.model.Consulta;
@@ -8,7 +9,8 @@ import med.voll.api.model.Medico;
 import med.voll.api.repository.ConsultaRepository;
 import med.voll.api.repository.MedicoRepository;
 import med.voll.api.repository.PacienteRepository;
-import med.voll.api.service.validators.ValidadorAgendamentoDeConsulta;
+import med.voll.api.service.validators.consulta.agendamento.ValidadorAgendamentoDeConsulta;
+import med.voll.api.service.validators.consulta.cancelamento.ValidadorCancelamentoDeConsulta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +23,21 @@ public class ConsultaService {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
 
-    private final List<ValidadorAgendamentoDeConsulta> validadores;
+    private final List<ValidadorAgendamentoDeConsulta> validadorAgendamentoDeConsultas;
+
+
+    private final List<ValidadorCancelamentoDeConsulta> validadorCancelamentoDeConsultas;
     @Autowired
     public ConsultaService(ConsultaRepository consultaRepository,
                            MedicoRepository medicoRepository,
                            PacienteRepository pacienteRepository,
-                           List<ValidadorAgendamentoDeConsulta> validadores) {
+                           List<ValidadorAgendamentoDeConsulta> validadorAgendamentoDeConsultas,
+                           List<ValidadorCancelamentoDeConsulta> validadorCancelamentoDeConsultas) {
         this.consultaRepository = consultaRepository;
         this.medicoRepository = medicoRepository;
         this.pacienteRepository = pacienteRepository;
-        this.validadores = validadores;
+        this.validadorAgendamentoDeConsultas = validadorAgendamentoDeConsultas;
+        this.validadorCancelamentoDeConsultas = validadorCancelamentoDeConsultas;
     }
 
     public ConsultaDetalhamentoDTO agendar (ConsultaAgendamentoDTO dadosDTO){
@@ -41,7 +48,7 @@ public class ConsultaService {
             throw new ValidacaoException("Id do médico informado não existe!");
         }
 
-        validadores.forEach(v -> v.validar(dadosDTO));
+        validadorAgendamentoDeConsultas.forEach(v -> v.validar(dadosDTO));
 
         var paciente = pacienteRepository.getReferenceById(dadosDTO.idPaciente());
         var medico = escolherMedico(dadosDTO);
@@ -63,5 +70,16 @@ public class ConsultaService {
             throw new ValidacaoException("Especialidade é obrigatória quando médico não é selecionado!");
         }
         return medicoRepository.escolherMedicoAleatorioLivreNaData(dadosDTO.especialidade(), dadosDTO.data());
+    }
+
+    public void cancelar(ConsultaCancelamentoDTO consultaCancelamentoDTO) {
+
+        if (!consultaRepository.existsById(consultaCancelamentoDTO.idConsulta())) {
+            throw new ValidacaoException("Id da consulta informada não existe!");
+        }
+        validadorCancelamentoDeConsultas.forEach(v -> v.validar(consultaCancelamentoDTO));
+
+        var consulta = consultaRepository.getReferenceById(consultaCancelamentoDTO.idConsulta());
+        consulta.cancelar(consultaCancelamentoDTO.motivoCancelamento());
     }
 }

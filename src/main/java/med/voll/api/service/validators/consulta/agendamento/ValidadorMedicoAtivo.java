@@ -1,10 +1,8 @@
-package med.voll.api.service.validators;
+package med.voll.api.service.validators.consulta.agendamento;
 
-import jakarta.validation.ValidationException;
 import med.voll.api.dto.consulta.ConsultaAgendamentoDTO;
 import med.voll.api.infra.exception.ValidacaoException;
 import med.voll.api.repository.MedicoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
